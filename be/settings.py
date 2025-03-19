@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'api',
     'corsheaders',
     'api.products',
+    'api.categories',
+    'api',
 ]
 
 MIDDLEWARE = [
@@ -174,3 +175,5 @@ CORS_ALLOW_HEADERS = [
     "x-csrftoken",
     "x-requested-with",
 ]
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
