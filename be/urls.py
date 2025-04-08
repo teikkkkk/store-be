@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),   
     path('api/register/', RegisterView.as_view(), name='register'),   
      path('api/user-info/', UserInfoView.as_view(), name='user_info'),
+    path('api/chat/', include('api.chat.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

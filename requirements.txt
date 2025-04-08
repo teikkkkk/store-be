@@ -4,3 +4,4 @@ mysqlclient
 djangorestframework-simplejwt
 django-cors-headers
 Pillow==10.3.0
+firebase-admin==6.1.0

@@ -8,7 +8,17 @@ from .serializers import ProductSerializer
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAdminUser]  
+    def get_permissions(self):
+        if self.request.method == "GET":   
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]   
+
+    def get_queryset(self):
+        queryset = Product.objects.all()
+        is_top = self.request.query_params.get('is_top', None)
+        if is_top == 'true':
+            queryset = queryset.filter(is_top=True)
+        return queryset
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -20,7 +30,12 @@ class ProductListCreateView(generics.ListCreateAPIView):
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [permissions.IsAdminUser]   
+  
+    def get_permissions(self):
+        if self.request.method == "GET":   
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]  
+
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=True)

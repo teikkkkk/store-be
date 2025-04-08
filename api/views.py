@@ -4,6 +4,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer,UserSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
+from firebase_admin import auth
+from django.http import JsonResponse 
 
 class RegisterView(generics.CreateAPIView):
     serializer_class = RegisterSerializer
@@ -12,8 +14,6 @@ class RegisterView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
-
-        # Tạo token cho user mới
         refresh = RefreshToken.for_user(user)
         return Response({
             'user': {

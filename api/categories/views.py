@@ -1,3 +1,4 @@
+# api/categories/views.py
 from .models import Category
 from .serializers import CategorySerializer
 from rest_framework import generics, permissions
@@ -7,7 +8,11 @@ from rest_framework import status
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAdminUser]
+
+    def get_permissions(self):
+        if self.request.method == "GET":   
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]  
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -19,7 +24,10 @@ class CategoryListCreateView(generics.ListCreateAPIView):
 class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAdminUser]
+    def get_permissions(self):
+        if self.request.method == "GET":   
+            return [permissions.AllowAny()]
+        return [permissions.IsAdminUser()]   
 
     def put(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -33,4 +41,3 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
