@@ -2,6 +2,7 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
+from django.db.models import Q
 from .models import Product
 from .serializers import ProductSerializer
 
@@ -14,10 +15,30 @@ class ProductListCreateView(generics.ListCreateAPIView):
         return [permissions.IsAdminUser()]   
 
     def get_queryset(self):
-        queryset = Product.objects.all()
+        queryset = Product.objects.all() 
+        search = self.request.query_params.get('search', None)
+        if search:
+            queryset = queryset.filter(
+                Q(name__icontains=search) |   
+                Q(description__icontains=search)   
+            ) 
+        category = self.request.query_params.get('category', None)
+        if category:
+            queryset = queryset.filter(category_id=category) 
+        min_price = self.request.query_params.get('min_price', None)
+        max_price = self.request.query_params.get('max_price', None)
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price) 
         is_top = self.request.query_params.get('is_top', None)
         if is_top == 'true':
-            queryset = queryset.filter(is_top=True)
+            queryset = queryset.filter(is_top=True) 
+        sort_by = self.request.query_params.get('sort', None)
+        if sort_by == 'price_asc':
+            queryset = queryset.order_by('price')
+        elif sort_by == 'price_desc':
+            queryset = queryset.order_by('-price')
         return queryset
 
     def post(self, request, *args, **kwargs):

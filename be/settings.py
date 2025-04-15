@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'api.products',
     'api.categories',
     'api.chat',
+    'api.cart',
     
 ]
 

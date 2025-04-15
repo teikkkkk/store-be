@@ -32,6 +32,7 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),   
      path('api/user-info/', UserInfoView.as_view(), name='user_info'),
     path('api/chat/', include('api.chat.urls')),
+    path('api/cart/', include('api.cart.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
