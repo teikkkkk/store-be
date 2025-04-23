@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'api.categories',
     'api.chat',
     'api.cart',
+    'api.orders',
     
 ]
 
@@ -181,3 +182,14 @@ CORS_ALLOW_HEADERS = [
 ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+# VNPay Configuration
+VNPAY_TMN_CODE = "VTT2ED6Q"  
+VNPAY_HASH_SECRET_KEY = "OLUET2ARKZC61HWO5W44XJ44DE1R66LO"   
+VNPAY_PAYMENT_URL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html"   
+VNPAY_RETURN_URL = "http://localhost:3000/payment/vnpay-return"  
+VNPAY_API_URL = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction"  
+VNPAY_COMMAND = "pay"  
+VNPAY_CURRENCY_CODE = "VND"   
+VNPAY_VERSION = "2.1.0"  
+VNPAY_LOCALE = "vn"   

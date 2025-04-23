@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from api.views import RegisterView,UserInfoView
+from api.payment.views import CreateVNPayPayment
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -33,6 +34,8 @@ urlpatterns = [
      path('api/user-info/', UserInfoView.as_view(), name='user_info'),
     path('api/chat/', include('api.chat.urls')),
     path('api/cart/', include('api.cart.urls')),
+    path('api/payment/create-vnpay-payment/', CreateVNPayPayment.as_view(), name='create-vnpay-payment'),
+    path('api/orders/', include('api.orders.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
