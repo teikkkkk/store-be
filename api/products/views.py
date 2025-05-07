@@ -2,9 +2,10 @@
 from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Q
+from django.db.models import Q, Count, Sum
 from .models import Product
 from .serializers import ProductSerializer
+from api.orders.models import OrderItem
 
 class ProductListCreateView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
@@ -39,6 +40,19 @@ class ProductListCreateView(generics.ListCreateAPIView):
             queryset = queryset.order_by('price')
         elif sort_by == 'price_desc':
             queryset = queryset.order_by('-price')
+        elif sort_by == 'sales':
+            queryset = Product.objects.annotate(
+                total_sold=Sum('orderitem__quantity')
+            ).order_by('-total_sold')
+        
+        limit = self.request.query_params.get('limit', None)
+        if limit:
+            try:
+                limit = int(limit)
+                queryset = queryset[:limit]
+            except ValueError:
+                pass
+                
         return queryset
 
     def post(self, request, *args, **kwargs):
@@ -69,3 +83,14 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance = self.get_object()
         instance.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+class TopProductView(generics.ListAPIView):
+    serializer_class = ProductSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def get_queryset(self):
+        return Product.objects.filter(
+            orderitem__isnull=False
+        ).annotate(
+            total_sold=Sum('orderitem__quantity')
+        ).order_by('-total_sold')[:10]
